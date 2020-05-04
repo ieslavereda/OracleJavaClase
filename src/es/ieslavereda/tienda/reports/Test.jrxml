@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Test" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6cf61c0c-48ff-48e3-b331-a9c1a2ed17f1">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+	<parameter name="paraWhere" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT `bbddJava`.`Articulo`.id,
+	`bbddJava`.`Articulo`.`descArticulo`,
+	`bbddJava`.`Articulo`.existencias,
+	`bbddJava`.`Articulo`.pvp,
+	`bbddJava`.`Articulo`.`categoriaId`
+FROM `bbddJava`.`Articulo`
+WHERE 
+	  $P!{paraWhere}]]>
+	</queryString>
+	<field name="id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Articulo"/>
+	</field>
+	<field name="descArticulo" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descArticulo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Articulo"/>
+	</field>
+	<field name="existencias" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="existencias"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Articulo"/>
+	</field>
+	<field name="pvp" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pvp"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Articulo"/>
+	</field>
+	<field name="categoriaId" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="categoriaId"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Articulo"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="50" uuid="1c54a481-f670-409d-9d11-0ec4bcaba1c6"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[IES La Vereda]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="20" uuid="230fcba7-f0aa-465b-91b8-a20fcc695f99"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[id]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="300" height="20" uuid="aec6ff77-6945-4dab-aec3-95aa14448881"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Descripcion]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="350" y="0" width="100" height="20" uuid="56f205c3-05de-4af1-a149-45d5836a1dfc"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Existencias]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="450" y="0" width="100" height="20" uuid="13b59b97-fed1-4174-b1f2-08cdf430c444"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[PVP]]></text>
+			</staticText>
+			<line>
+				<reportElement x="-3" y="20" width="560" height="1" uuid="4af33403-85dc-4edd-b7bb-7a754c71593c"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="50" height="20" uuid="aaca734c-a549-4a49-8114-99c73ff7e9b2"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="0" width="300" height="20" uuid="836e348f-7d46-4c89-99eb-964957c1cb47"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{descArticulo}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="350" y="0" width="100" height="20" uuid="3b8782a6-59ce-4934-bdbc-ae7e6f3cd6ad"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{existencias}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="450" y="0" width="100" height="20" uuid="0251f8b7-b331-4d0f-9e26-65e8b3b292ff"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{pvp}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="25" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="84" splitType="Stretch">
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="-1" y="52" width="100" height="20" uuid="3fbae21c-0d6f-49a9-8f9a-3b83adebbc9e"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="319" y="52" width="100" height="30" uuid="cc0fb89b-c945-4099-ae96-9a6b3d57c1a8"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement x="450" y="50" width="100" height="30" uuid="7f67ab78-90c7-4b52-ba30-3b609e065a26"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
