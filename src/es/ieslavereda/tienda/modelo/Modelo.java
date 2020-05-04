@@ -17,6 +17,8 @@ import java.util.Map;
 
 import javax.swing.ImageIcon;
 
+import es.ieslavereda.tienda.classes.Usuario;
+
 /**
  * Creado el 27 mar. 2019
  * 
@@ -55,10 +57,63 @@ public class Modelo extends Database {
 			return cantidad;
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return 0;
 		}
+	}
+
+	public boolean insertarUsuario(Usuario usuario) {
+		boolean insertado = false;
+
+		String sql = "INSERT INTO Usuario (login ,mail ,role ,password) VALUES ('" + usuario.getLogin() + "','"
+				+ usuario.getMail() + "','" + usuario.getRole() + "','" + usuario.getPassword() + "')";
+		
+		try(Connection con = conectar();
+				Statement st = con.createStatement();){
+
+			st.execute(sql);
+			insertado=true;			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return insertado;
+	}
+
+	public ArrayList<Usuario> obtenerUsuarios() {
+
+		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
+
+		int id;
+		String login;
+		String mail;
+		String role;
+		String password;
+		Usuario usuario;
+
+		String sql = "SELECT * FROM Usuario";
+
+		try (Connection con = conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql);) {
+
+			while (rs.next()) {
+
+				id = rs.getInt("id");
+				login = rs.getString("login");
+				mail = rs.getString("mail");
+				role = rs.getString("role");
+				password = rs.getString("password");
+
+				usuario = new Usuario(id, login, mail, role, password);
+
+				usuarios.add(usuario);
+
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return usuarios;
 	}
 
 }

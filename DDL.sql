@@ -60,8 +60,8 @@ CREATE TABLE Articulo (
 	pvp NUMBER(10,2) DEFAULT 0 NOT NULL,
 	idIVA NUMBER NOT NULL,
 	categoriaId NUMBER NOT NULL,
-    CHECK(existencias>0),
-    CHECK(pvp>0),
+    CHECK(existencias>=0),
+    CHECK(pvp>=0),
 	FOREIGN KEY (categoriaId) REFERENCES Categoria (id),
 	FOREIGN KEY (idIVA) REFERENCES IVA (id));
 

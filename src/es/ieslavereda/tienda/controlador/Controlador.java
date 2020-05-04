@@ -5,11 +5,18 @@ package es.ieslavereda.tienda.controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Vector;
+
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+import es.ieslavereda.tienda.classes.Usuario;
 import es.ieslavereda.tienda.modelo.Modelo;
 import es.ieslavereda.tienda.vista.JFramePrincipal;
 import es.ieslavereda.tienda.vista.JIFLogin;
+import es.ieslavereda.tienda.vista.JIFUsuarios;
 
 /**
  * Creado el 27 mar. 2019
@@ -25,6 +32,7 @@ public class Controlador implements ActionListener {
 
 	// formularios hijo
 	JIFLogin jifLogin;
+	JIFUsuarios jifUsers;
 
 	public Controlador(JFramePrincipal view, Modelo modelo) {
 		this.view = view;
@@ -38,7 +46,7 @@ public class Controlador implements ActionListener {
 
 		// Añadir las accionew a los botones del formulario padre
 		view.btnListUsers.setActionCommand("Listar usuarios");
-		view.btnAddUser.setActionCommand("Abrir formulario alta usuarios");
+		view.btnUsers.setActionCommand("Abrir formulario gestion usuarios");
 		view.btnLogin.setActionCommand("Abrir formulario login");
 		view.btnSalir.setActionCommand("Cerrar sesion");
 		view.btnReport.setActionCommand("Report");
@@ -46,7 +54,7 @@ public class Controlador implements ActionListener {
 
 		// Ponemos a escuchar las accionew del usuario
 		view.btnListUsers.addActionListener(this);
-		view.btnAddUser.addActionListener(this);
+		view.btnUsers.addActionListener(this);
 		view.btnLogin.addActionListener(this);
 		view.btnSalir.addActionListener(this);
 		view.btnReport.addActionListener(this);
@@ -72,8 +80,8 @@ public class Controlador implements ActionListener {
 			
 		} else if (comando.equals("Cerrar formulario listado usuarios")) {
 			
-		} else if (comando.equals("Abrir formulario alta usuarios")) {
-			
+		} else if (comando.equals("Abrir formulario gestion usuarios")) {
+			openJIFUsers();
 		} else if (comando.equals("Alta usuario")) {
 			
 		} else if (comando.equals("Eliminar usuarios")) {
@@ -95,6 +103,45 @@ public class Controlador implements ActionListener {
 	}
 
 
+	private void openJIFUsers() {
+		
+		if (!estaAbierto(jifUsers)) {
+			
+			jifUsers = new JIFUsuarios();
+			
+			view.desktopPane.add(jifUsers);
+			jifUsers.setVisible(true);
+			
+			// Cargamos usuarios en la tabla
+			
+			ArrayList<Usuario> usuarios = modelo.obtenerUsuarios();
+			Vector<String> rowData;
+			
+			DefaultTableModel dtm = new DefaultTableModel();
+			dtm.addColumn("id");
+			dtm.addColumn("login");
+			dtm.addColumn("role");
+			dtm.addColumn("mail");
+			
+			for(Usuario u : usuarios) {
+				
+				rowData= new Vector<String>();
+				
+				rowData.add(String.valueOf(u.getId()));
+				rowData.add(u.getLogin());
+				rowData.add(u.getRole());
+				rowData.add(u.getMail());
+				
+				dtm.addRow(rowData);
+				
+			}
+			
+			jifUsers.getTableUsers().setModel(dtm);		
+			
+		}
+		
+	}
+
 	private boolean estaAbierto(JInternalFrame jif) {
 		boolean abierto = false;
 		JInternalFrame[] internalFrames = view.desktopPane.getAllFrames();
@@ -113,7 +160,7 @@ public class Controlador implements ActionListener {
 
 		if (option == JOptionPane.YES_OPTION) {
 			view.btnListUsers.setEnabled(false);
-			view.btnAddUser.setEnabled(false);
+			view.btnUsers.setEnabled(false);
 			view.btnLogin.setEnabled(true);
 			view.btnSalir.setEnabled(false);
 			view.btnReport.setEnabled(false);
@@ -131,7 +178,7 @@ public class Controlador implements ActionListener {
 		String password = String.valueOf(jifLogin.passwordField.getPassword());
 
 		if (modelo.autentificar(login, password)) {
-			view.btnAddUser.setEnabled(true);
+			view.btnUsers.setEnabled(true);
 			view.btnListUsers.setEnabled(true);
 			view.btnLogin.setEnabled(false);
 			view.btnSalir.setEnabled(true);

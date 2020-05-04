@@ -26,7 +26,7 @@ public class JFramePrincipal extends JFrame {
 	private JPanel contentPane;
 	public JButton btnListUsers;
 	public JDesktopPane desktopPane;
-	public JButton btnAddUser;
+	public JButton btnUsers;
 	public JButton btnLogin;
 	public JButton btnSalir;
 	public JButton btnReport;
@@ -51,10 +51,10 @@ public class JFramePrincipal extends JFrame {
 		btnLogin.setIcon(new ImageIcon(JFramePrincipal.class.getResource("/es/ieslavereda/tienda/images/login.png")));
 		toolBar.add(btnLogin);
 		
-		btnAddUser = new JButton("Users");
-		btnAddUser.setEnabled(false);
-		btnAddUser.setIcon(new ImageIcon(JFramePrincipal.class.getResource("/es/ieslavereda/tienda/images/alta_usuario.png")));
-		toolBar.add(btnAddUser);
+		btnUsers = new JButton("Users");
+		btnUsers.setEnabled(false);
+		btnUsers.setIcon(new ImageIcon(JFramePrincipal.class.getResource("/es/ieslavereda/tienda/images/alta_usuario.png")));
+		toolBar.add(btnUsers);
 		
 		btnListUsers = new JButton("Clients");
 		btnListUsers.setEnabled(false);
