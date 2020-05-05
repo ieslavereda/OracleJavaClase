@@ -17,6 +17,9 @@ import java.awt.event.ActionEvent;
 
 public class JIFUsuarios extends JInternalFrame {
 	private JTable tableUsers;
+	private JButton btnDelUser;
+	private JButton btnEditUser;
+	private JButton btnAddUser;
 
 	/**
 	 * Create the frame.
@@ -62,13 +65,13 @@ public class JIFUsuarios extends JInternalFrame {
 			}
 		});
 		
-		JButton btnAddUser = new JButton("Add");
+		btnAddUser = new JButton("Add");
 		panelBotones.add(btnAddUser);
 		
-		JButton btnDelUser = new JButton("Delete");
+		btnDelUser = new JButton("Delete");
 		panelBotones.add(btnDelUser);
 		
-		JButton btnEditUser = new JButton("Edit");
+		btnEditUser = new JButton("Edit");
 		panelBotones.add(btnEditUser);
 		panelBotones.add(btnCancel);
 		panelTabla.setLayout(new BorderLayout(0, 0));
@@ -84,6 +87,18 @@ public class JIFUsuarios extends JInternalFrame {
 
 	public JTable getTableUsers() {
 		return tableUsers;
+	}
+
+	public JButton getBtnDelUser() {
+		return btnDelUser;
+	}
+
+	public JButton getBtnEditUser() {
+		return btnEditUser;
+	}
+
+	public JButton getBtnAddUser() {
+		return btnAddUser;
 	}
 	
 	

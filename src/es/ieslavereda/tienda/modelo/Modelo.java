@@ -79,6 +79,31 @@ public class Modelo extends Database {
 		
 		return insertado;
 	}
+	public boolean actualizarUsuario(Usuario usuario) {
+		boolean actualizado = false;
+		
+		return actualizado;
+	}
+	
+	public boolean eliminarUsuario(int id) {
+		
+		boolean eliminado = false;
+		
+		String sql = "DELETE FROM Usuario WHERE id="+id;
+				
+		try(Connection con = conectar();
+				Statement st = con.createStatement();){
+			
+			st.execute(sql);
+			
+			eliminado=true;
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return eliminado;
+	}
 
 	public ArrayList<Usuario> obtenerUsuarios() {
 

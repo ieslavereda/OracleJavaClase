@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import es.ieslavereda.tienda.classes.Usuario;
 import es.ieslavereda.tienda.modelo.Modelo;
 import es.ieslavereda.tienda.vista.JFramePrincipal;
+import es.ieslavereda.tienda.vista.JIFFormularioUsuarios;
 import es.ieslavereda.tienda.vista.JIFLogin;
 import es.ieslavereda.tienda.vista.JIFUsuarios;
 
@@ -33,6 +34,7 @@ public class Controlador implements ActionListener {
 	// formularios hijo
 	JIFLogin jifLogin;
 	JIFUsuarios jifUsers;
+	JIFFormularioUsuarios jifFormularioUsuarios;
 
 	public Controlador(JFramePrincipal view, Modelo modelo) {
 		this.view = view;
@@ -50,7 +52,6 @@ public class Controlador implements ActionListener {
 		view.btnLogin.setActionCommand("Abrir formulario login");
 		view.btnSalir.setActionCommand("Cerrar sesion");
 		view.btnReport.setActionCommand("Report");
-		
 
 		// Ponemos a escuchar las accionew del usuario
 		view.btnListUsers.addActionListener(this);
@@ -77,15 +78,11 @@ public class Controlador implements ActionListener {
 
 		String comando = arg0.getActionCommand();
 		if (comando.equals("Listar usuarios")) {
-			
+
 		} else if (comando.equals("Cerrar formulario listado usuarios")) {
-			
+
 		} else if (comando.equals("Abrir formulario gestion usuarios")) {
 			openJIFUsers();
-		} else if (comando.equals("Alta usuario")) {
-			
-		} else if (comando.equals("Eliminar usuarios")) {
-			
 		} else if (comando.equals("Abrir formulario login")) {
 			abrirFormularioLogin();
 		} else if (comando.equals("Loguear")) {
@@ -93,53 +90,141 @@ public class Controlador implements ActionListener {
 		} else if (comando.equals("Cerrar sesion")) {
 			cerrarSesion();
 		} else if (comando.equals("Editar usuario")) {
-			
+
 		} else if (comando.equals("Actualizar Usuario")) {
-			
+
 		} else if (comando.equals("Report")) {
-			
+
+		} else if (comando.equals("Del users")) {
+			delUsers();
+		} else if (comando.equals("Add user")) {
+			openAddUserInternalFrame();
+		} else if (comando.equals("Add new user")) {
+			addNewUser();
 		}
 
 	}
 
+	private void addNewUser() {
+
+		int option = JOptionPane.showConfirmDialog(jifUsers, "Esta usted seguro de añadir al usuario?", "Question",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		if (option == JOptionPane.YES_OPTION) {
+
+			String login = jifFormularioUsuarios.getTextFieldLogin().getText().replaceAll(" ", "");
+			String mail = jifFormularioUsuarios.getTextFieldMail().getText().replaceAll(" ", "");
+			String role = jifFormularioUsuarios.getComboBoxRole().getSelectedItem().toString();
+			String password = String.valueOf(jifFormularioUsuarios.getPasswordField().getPassword());
+
+			if (modelo.insertarUsuario(new Usuario(login, mail, role, password))) {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario insertado", "Info", JOptionPane.INFORMATION_MESSAGE);
+				actualizarTablaUsuarios(modelo.obtenerUsuarios());
+				jifFormularioUsuarios.dispose();
+			}else {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario no insertado", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+
+		}
+	}
+
+	private void openAddUserInternalFrame() {
+
+		jifFormularioUsuarios = new JIFFormularioUsuarios();
+
+		// Añadimos los listeners
+		jifFormularioUsuarios.getBtnAction().addActionListener(this);
+		jifFormularioUsuarios.getBtnAction().setActionCommand("Add new user");
+
+		// modificamos el texto del boton
+		jifFormularioUsuarios.getBtnAction().setText("Add");
+
+		// Hacemos visible en el desktop pane
+		jifFormularioUsuarios.setVisible(true);
+		view.desktopPane.add(jifFormularioUsuarios);
+
+	}
+
+	private void delUsers() {
+
+		int[] filas = jifUsers.getTableUsers().getSelectedRows();
+		int option;
+		int id;
+
+		if (filas.length == 0) {
+			JOptionPane.showMessageDialog(jifUsers, "Debe seleccionar previamente los usuarios a elminar", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			option = JOptionPane.showConfirmDialog(jifUsers,
+					"Esta usted seguro de eliminar los " + filas.length + " usuarios seleccionados?",
+					"Eliminacion de usuarios", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+			if (option == JOptionPane.YES_OPTION) {
+
+				for (int fila : filas) {
+
+					id = Integer.parseInt(jifUsers.getTableUsers().getValueAt(fila, 0).toString());
+					modelo.eliminarUsuario(id);
+
+				}
+
+				JOptionPane.showMessageDialog(jifUsers, "Usuarios eliminados", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+				actualizarTablaUsuarios(modelo.obtenerUsuarios());
+			}
+		}
+
+	}
 
 	private void openJIFUsers() {
-		
+
 		if (!estaAbierto(jifUsers)) {
-			
+
 			jifUsers = new JIFUsuarios();
-			
+
 			view.desktopPane.add(jifUsers);
 			jifUsers.setVisible(true);
-			
+
+			// Establecemos los listeners
+			jifUsers.getBtnDelUser().addActionListener(this);
+			jifUsers.getBtnAddUser().addActionListener(this);
+
+			jifUsers.getBtnDelUser().setActionCommand("Del users");
+			jifUsers.getBtnAddUser().setActionCommand("Add user");
+
 			// Cargamos usuarios en la tabla
-			
-			ArrayList<Usuario> usuarios = modelo.obtenerUsuarios();
-			Vector<String> rowData;
-			
-			DefaultTableModel dtm = new DefaultTableModel();
-			dtm.addColumn("id");
-			dtm.addColumn("login");
-			dtm.addColumn("role");
-			dtm.addColumn("mail");
-			
-			for(Usuario u : usuarios) {
-				
-				rowData= new Vector<String>();
-				
-				rowData.add(String.valueOf(u.getId()));
-				rowData.add(u.getLogin());
-				rowData.add(u.getRole());
-				rowData.add(u.getMail());
-				
-				dtm.addRow(rowData);
-				
-			}
-			
-			jifUsers.getTableUsers().setModel(dtm);		
-			
+
+			actualizarTablaUsuarios(modelo.obtenerUsuarios());
+
 		}
-		
+
+	}
+
+	private void actualizarTablaUsuarios(ArrayList<Usuario> usuarios) {
+
+		Vector<String> rowData;
+
+		DefaultTableModel dtm = new DefaultTableModel();
+		dtm.addColumn("id");
+		dtm.addColumn("login");
+		dtm.addColumn("role");
+		dtm.addColumn("mail");
+
+		for (Usuario u : usuarios) {
+
+			rowData = new Vector<String>();
+
+			rowData.add(String.valueOf(u.getId()));
+			rowData.add(u.getLogin());
+			rowData.add(u.getRole());
+			rowData.add(u.getMail());
+
+			dtm.addRow(rowData);
+
+		}
+
+		jifUsers.getTableUsers().setModel(dtm);
+
 	}
 
 	private boolean estaAbierto(JInternalFrame jif) {
@@ -188,7 +273,6 @@ public class Controlador implements ActionListener {
 
 	}
 
-	
 	private void abrirFormularioLogin() {
 		if (!estaAbierto(jifLogin)) {
 			jifLogin = new JIFLogin();
@@ -202,5 +286,4 @@ public class Controlador implements ActionListener {
 		}
 	}
 
-	
 }
