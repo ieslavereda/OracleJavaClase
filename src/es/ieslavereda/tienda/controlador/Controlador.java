@@ -35,6 +35,7 @@ public class Controlador implements ActionListener {
 	JIFLogin jifLogin;
 	JIFUsuarios jifUsers;
 	JIFFormularioUsuarios jifFormularioUsuarios;
+	
 
 	public Controlador(JFramePrincipal view, Modelo modelo) {
 		this.view = view;
@@ -89,10 +90,10 @@ public class Controlador implements ActionListener {
 			loguearUsuario();
 		} else if (comando.equals("Cerrar sesion")) {
 			cerrarSesion();
-		} else if (comando.equals("Editar usuario")) {
-
-		} else if (comando.equals("Actualizar Usuario")) {
-
+		} else if (comando.equals("Update user")) {
+			updateUser();
+		} else if (comando.equals("Edit user")) {
+			openEditUserJIFrame();
 		} else if (comando.equals("Report")) {
 
 		} else if (comando.equals("Del users")) {
@@ -102,7 +103,70 @@ public class Controlador implements ActionListener {
 		} else if (comando.equals("Add new user")) {
 			addNewUser();
 		}
+		
+	}
 
+	private void updateUser() {
+		int option = JOptionPane.showConfirmDialog(jifUsers, "Esta usted seguro que desea modificar el usuario?", "Question",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+
+		if (option == JOptionPane.YES_OPTION) {
+			
+			Usuario u = jifFormularioUsuarios.getUsuario();
+			
+			u.setLogin(jifFormularioUsuarios.getTextFieldLogin().getText());
+			u.setMail(jifFormularioUsuarios.getTextFieldMail().getText());
+			u.setPassword(String.valueOf(jifFormularioUsuarios.getPasswordField().getPassword()));
+			u.setRole(jifFormularioUsuarios.getComboBoxRole().getSelectedItem().toString());
+			
+			if(modelo.actualizarUsuario(u)) {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario actualizado correctamente.", "Info", JOptionPane.INFORMATION_MESSAGE);
+				u = null;
+				jifFormularioUsuarios.dispose();
+			}else {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "El usuario no se ha podido actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
+			}
+			
+		}
+		
+		
+	}
+
+	private void openEditUserJIFrame() {
+		
+		int fila = jifUsers.getTableUsers().getSelectedRow();
+
+		if (fila == -1) {
+			JOptionPane.showMessageDialog(jifUsers, "Debe seleccionar previamente el usuario a editar", "Error",
+					JOptionPane.ERROR_MESSAGE);
+		} else {
+			
+			int id = Integer.parseInt(jifUsers.getTableUsers().getValueAt(fila, 0).toString());
+			String login = jifUsers.getTableUsers().getValueAt(fila, 1).toString();
+			String role = jifUsers.getTableUsers().getValueAt(fila, 2).toString();
+			String mail = jifUsers.getTableUsers().getValueAt(fila, 3).toString();
+			
+			
+			Usuario u = new Usuario(id,login,mail,role,"");
+			
+			jifFormularioUsuarios = new JIFFormularioUsuarios();
+			
+			jifFormularioUsuarios.getTextFieldLogin().setText(login);
+			jifFormularioUsuarios.getTextFieldMail().setText(mail);
+			jifFormularioUsuarios.getComboBoxRole().setSelectedItem(role);
+			
+			view.desktopPane.add(jifFormularioUsuarios);
+			jifFormularioUsuarios.setVisible(true);
+			
+			jifFormularioUsuarios.getBtnAction().setText("Update");
+			jifFormularioUsuarios.getBtnAction().addActionListener(this);
+			jifFormularioUsuarios.getBtnAction().setActionCommand("Update user");
+			
+			
+			jifFormularioUsuarios.setUsuario(u);
+			
+		}
+		
 	}
 
 	private void addNewUser() {
@@ -188,9 +252,11 @@ public class Controlador implements ActionListener {
 			// Establecemos los listeners
 			jifUsers.getBtnDelUser().addActionListener(this);
 			jifUsers.getBtnAddUser().addActionListener(this);
+			jifUsers.getBtnEditUser().addActionListener(this);
 
 			jifUsers.getBtnDelUser().setActionCommand("Del users");
 			jifUsers.getBtnAddUser().setActionCommand("Add user");
+			jifUsers.getBtnEditUser().setActionCommand("Edit user");
 
 			// Cargamos usuarios en la tabla
 

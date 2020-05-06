@@ -8,11 +8,13 @@ public class Test {
 	public static void main(String[] args) {
 		
 		Modelo m = new Modelo();
-		Usuario u = new Usuario( "TERESA", "teresa@ieslavereda.es", "admin", "1111");		
-		System.out.println(m.insertarUsuario(u));
+		Usuario u = new Usuario(8, "TERESAS", "teresa@ieslavereda.es", "admin", "1111");		
+		//System.out.println(m.insertarUsuario(u));
 		
+		m.actualizarUsuario(u);
 		//m.eliminarUsuario(5);
-
+		
+		
 	}
 
 }

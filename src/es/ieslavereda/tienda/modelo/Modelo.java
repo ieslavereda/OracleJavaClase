@@ -67,45 +67,65 @@ public class Modelo extends Database {
 
 		String sql = "INSERT INTO Usuario (login ,mail ,role ,password) VALUES ('" + usuario.getLogin() + "','"
 				+ usuario.getMail() + "','" + usuario.getRole() + "','" + usuario.getPassword() + "')";
-		
-		try(Connection con = conectar();
-				Statement st = con.createStatement();){
+
+		try (Connection con = conectar(); Statement st = con.createStatement();) {
 
 			st.execute(sql);
-			insertado=true;			
+			insertado = true;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+
 		return insertado;
 	}
-	public boolean actualizarUsuario(Usuario usuario) {
+
+	public boolean actualizarUsuario(Usuario u) {
 		boolean actualizado = false;
+
+		String sql = "UPDATE Usuario SET login='" + u.getLogin() + "' ,mail='" + u.getMail() + "' ,role='" + u.getRole()
+				+ "' ,password='" + u.getPassword() + "' WHERE id=" + u.getId();
 		
-		return actualizado;
-	}
-	
-	public boolean eliminarUsuario(int id) {
-		
-		boolean eliminado = false;
-		
-		String sql = "DELETE FROM Usuario WHERE id="+id;
-				
-		try(Connection con = conectar();
-				Statement st = con.createStatement();){
-			
+		System.out.println(sql);
+
+		try (Connection con = conectar(); Statement st = con.createStatement()) {
+
 			st.execute(sql);
-			
-			eliminado=true;
-			
+			actualizado = true;
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		return eliminado;
+
+		return actualizado;
 	}
 
-	public ArrayList<Usuario> obtenerUsuarios() {
+	public boolean eliminarUsuario(int id) {
+
+		boolean eliminado = false;
+
+		String sql = "DELETE FROM Usuario WHERE id=" + id;
+
+		try (Connection con = conectar(); Statement st = con.createStatement();) {
+
+			st.execute(sql);
+
+			eliminado = true;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return eliminado;
+	}
+	
+	public ArrayList<Usuario> obtenerUsuarios(String where){
+		return obtenerUsuarios(where,"");
+	}
+	public ArrayList<Usuario> obtenerUsuarios(){
+		return obtenerUsuarios("","");
+	}
+
+	public ArrayList<Usuario> obtenerUsuarios(String where, String oder) {
 
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 

@@ -14,6 +14,10 @@ import javax.swing.JTable;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.JLabel;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
 
 public class JIFUsuarios extends JInternalFrame {
 	private JTable tableUsers;
@@ -56,6 +60,24 @@ public class JIFUsuarios extends JInternalFrame {
 					.addComponent(panelBotones, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
+		panel_1.setLayout(new MigLayout("", "[][][12.00][][][13.00][]", "[]"));
+		
+		JLabel lblNewLabel = new JLabel("Campo");
+		panel_1.add(lblNewLabel, "cell 0 0,alignx trailing");
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setModel(new DefaultComboBoxModel(new String[] {"id", "login", "mail", "role"}));
+		panel_1.add(comboBox, "cell 1 0,growx");
+		
+		JLabel lblNewLabel_1 = new JLabel("Orden");
+		panel_1.add(lblNewLabel_1, "cell 3 0,alignx trailing");
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Ascendente", "Descendente"}));
+		panel_1.add(comboBox_1, "cell 4 0,growx");
+		
+		JButton btnNewButton = new JButton("Ordenar");
+		panel_1.add(btnNewButton, "cell 6 0");
 		panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
 		JButton btnCancel = new JButton("Cancel");
