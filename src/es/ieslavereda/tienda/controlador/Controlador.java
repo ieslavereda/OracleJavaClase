@@ -53,6 +53,7 @@ public class Controlador implements ActionListener {
 		view.btnLogin.setActionCommand("Abrir formulario login");
 		view.btnSalir.setActionCommand("Cerrar sesion");
 		view.btnReport.setActionCommand("Report");
+		
 
 		// Ponemos a escuchar las accionew del usuario
 		view.btnListUsers.addActionListener(this);
@@ -94,8 +95,8 @@ public class Controlador implements ActionListener {
 			updateUser();
 		} else if (comando.equals("Edit user")) {
 			openEditUserJIFrame();
-		} else if (comando.equals("Report")) {
-
+		} else if (comando.equals("Actualizar tabla usuarios")) {
+			actualizarTablaUsuarios();
 		} else if (comando.equals("Del users")) {
 			delUsers();
 		} else if (comando.equals("Add user")) {
@@ -105,6 +106,8 @@ public class Controlador implements ActionListener {
 		}
 		
 	}
+
+
 
 	private void updateUser() {
 		int option = JOptionPane.showConfirmDialog(jifUsers, "Esta usted seguro que desea modificar el usuario?", "Question",
@@ -183,7 +186,7 @@ public class Controlador implements ActionListener {
 
 			if (modelo.insertarUsuario(new Usuario(login, mail, role, password))) {
 				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario insertado", "Info", JOptionPane.INFORMATION_MESSAGE);
-				actualizarTablaUsuarios(modelo.obtenerUsuarios());
+				actualizarTablaUsuarios();
 				jifFormularioUsuarios.dispose();
 			}else {
 				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario no insertado", "Error", JOptionPane.ERROR_MESSAGE);
@@ -234,7 +237,7 @@ public class Controlador implements ActionListener {
 
 				JOptionPane.showMessageDialog(jifUsers, "Usuarios eliminados", "Info", JOptionPane.INFORMATION_MESSAGE);
 
-				actualizarTablaUsuarios(modelo.obtenerUsuarios());
+				actualizarTablaUsuarios();
 			}
 		}
 
@@ -253,17 +256,40 @@ public class Controlador implements ActionListener {
 			jifUsers.getBtnDelUser().addActionListener(this);
 			jifUsers.getBtnAddUser().addActionListener(this);
 			jifUsers.getBtnEditUser().addActionListener(this);
+			jifUsers.getComboBoxSort().addActionListener(this);
+			jifUsers.getComboBoxOrder().addActionListener(this);
+			jifUsers.getBtnSearch().addActionListener(this);
 
 			jifUsers.getBtnDelUser().setActionCommand("Del users");
 			jifUsers.getBtnAddUser().setActionCommand("Add user");
 			jifUsers.getBtnEditUser().setActionCommand("Edit user");
+			jifUsers.getComboBoxSort().setActionCommand("Actualizar tabla usuarios");
+			jifUsers.getComboBoxOrder().setActionCommand("Actualizar tabla usuarios");
+			jifUsers.getBtnSearch().setActionCommand("Actualizar tabla usuarios");
 
 			// Cargamos usuarios en la tabla
 
-			actualizarTablaUsuarios(modelo.obtenerUsuarios());
+			actualizarTablaUsuarios();
 
 		}
 
+	}
+	private void actualizarTablaUsuarios() {
+		
+		String where="";
+		String order;
+		
+		if(!jifUsers.getTextFieldWhere().getText().isBlank()) {
+			where+=jifUsers.getComboBoxWhere().getSelectedItem().toString() + " LIKE '%" + jifUsers.getTextFieldWhere().getText() + "%' ";
+		}
+		
+		order = jifUsers.getComboBoxSort().getSelectedItem().toString();
+		order += (jifUsers.getComboBoxOrder().getSelectedItem().toString().equals("Ascendente"))?" ASC":" DESC";
+		
+		ArrayList<Usuario> usuarios = modelo.obtenerUsuarios(where, order);
+		
+		actualizarTablaUsuarios(usuarios);
+		
 	}
 
 	private void actualizarTablaUsuarios(ArrayList<Usuario> usuarios) {

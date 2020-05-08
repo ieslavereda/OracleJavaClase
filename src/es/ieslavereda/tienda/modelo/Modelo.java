@@ -125,7 +125,7 @@ public class Modelo extends Database {
 		return obtenerUsuarios("","");
 	}
 
-	public ArrayList<Usuario> obtenerUsuarios(String where, String oder) {
+	public ArrayList<Usuario> obtenerUsuarios(String where, String order) {
 
 		ArrayList<Usuario> usuarios = new ArrayList<Usuario>();
 
@@ -137,7 +137,17 @@ public class Modelo extends Database {
 		Usuario usuario;
 
 		String sql = "SELECT * FROM Usuario";
+		
+		if(!where.equals("")) {
+			sql+=" WHERE " + where;
+		}
+		
+		if(!order.equals("")) {
+			sql+=" ORDER BY " + order;
+		}
 
+		System.out.println(sql);
+		
 		try (Connection con = conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql);) {
 
 			while (rs.next()) {

@@ -18,12 +18,18 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JTextField;
 
 public class JIFUsuarios extends JInternalFrame {
 	private JTable tableUsers;
 	private JButton btnDelUser;
 	private JButton btnEditUser;
 	private JButton btnAddUser;
+	private JComboBox comboBoxOrder;
+	private JComboBox comboBoxSort;
+	private JTextField textFieldWhere;
+	private JComboBox comboBoxWhere;
+	private JButton btnSearch;
 
 	/**
 	 * Create the frame.
@@ -60,24 +66,35 @@ public class JIFUsuarios extends JInternalFrame {
 					.addComponent(panelBotones, GroupLayout.PREFERRED_SIZE, 38, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
-		panel_1.setLayout(new MigLayout("", "[][][12.00][][][13.00][]", "[]"));
+		panel_1.setLayout(new MigLayout("", "[][grow][grow][][][12.00][][][13.00][]", "[]"));
 		
-		JLabel lblNewLabel = new JLabel("Campo");
-		panel_1.add(lblNewLabel, "cell 0 0,alignx trailing");
+		JLabel lblNewLabel_2 = new JLabel("Search by");
+		panel_1.add(lblNewLabel_2, "cell 0 0,alignx trailing");
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setModel(new DefaultComboBoxModel(new String[] {"id", "login", "mail", "role"}));
-		panel_1.add(comboBox, "cell 1 0,growx");
+		comboBoxWhere = new JComboBox();
+		comboBoxWhere.setModel(new DefaultComboBoxModel(new String[] {"login", "mail", "role"}));
+		panel_1.add(comboBoxWhere, "cell 1 0,growx");
+		
+		textFieldWhere = new JTextField();
+		panel_1.add(textFieldWhere, "cell 2 0,growx");
+		textFieldWhere.setColumns(10);
+		
+		JLabel lblNewLabel = new JLabel("Sort by");
+		panel_1.add(lblNewLabel, "cell 3 0,alignx trailing");
+		
+		comboBoxSort = new JComboBox();
+		comboBoxSort.setModel(new DefaultComboBoxModel(new String[] {"id", "login", "mail", "role"}));
+		panel_1.add(comboBoxSort, "cell 4 0,growx");
 		
 		JLabel lblNewLabel_1 = new JLabel("Orden");
-		panel_1.add(lblNewLabel_1, "cell 3 0,alignx trailing");
+		panel_1.add(lblNewLabel_1, "cell 6 0,alignx trailing");
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setModel(new DefaultComboBoxModel(new String[] {"Ascendente", "Descendente"}));
-		panel_1.add(comboBox_1, "cell 4 0,growx");
+		comboBoxOrder = new JComboBox();
+		comboBoxOrder.setModel(new DefaultComboBoxModel(new String[] {"Ascendente", "Descendente"}));
+		panel_1.add(comboBoxOrder, "cell 7 0,growx");
 		
-		JButton btnNewButton = new JButton("Ordenar");
-		panel_1.add(btnNewButton, "cell 6 0");
+		btnSearch = new JButton("Search");
+		panel_1.add(btnSearch, "cell 9 0");
 		panelBotones.setLayout(new FlowLayout(FlowLayout.RIGHT, 5, 5));
 		
 		JButton btnCancel = new JButton("Cancel");
@@ -121,6 +138,26 @@ public class JIFUsuarios extends JInternalFrame {
 
 	public JButton getBtnAddUser() {
 		return btnAddUser;
+	}
+
+	public JComboBox getComboBoxOrder() {
+		return comboBoxOrder;
+	}
+
+	public JComboBox getComboBoxSort() {
+		return comboBoxSort;
+	}
+
+	public JTextField getTextFieldWhere() {
+		return textFieldWhere;
+	}
+
+	public JComboBox getComboBoxWhere() {
+		return comboBoxWhere;
+	}
+
+	public JButton getBtnSearch() {
+		return btnSearch;
 	}
 	
 	
