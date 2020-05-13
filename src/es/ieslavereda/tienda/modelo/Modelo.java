@@ -7,6 +7,7 @@ import java.awt.Image;
 import java.io.File;
 import java.sql.Blob;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -40,6 +41,36 @@ public class Modelo extends Database {
 			exito = true;
 
 		return exito;
+	}
+
+	public boolean validar(String login, String password) throws SQLException {
+
+		boolean validado = false;
+
+		String sql = "SELECT COUNT(*) AS CANTIDAD FROM Usuario WHERE login=? AND password=? ";
+
+		try (Connection con = conectar(); PreparedStatement ps = con.prepareStatement(sql)) {
+
+			int pos = 0, cantidad;
+
+			ps.setString(++pos, login);
+			ps.setString(++pos, password);
+
+//			ps.setString(1, login);
+//			ps.setString(2, password);
+
+			ResultSet rs = ps.executeQuery();
+
+			rs.next();
+
+			cantidad = rs.getInt("CANTIDAD");
+
+			if (cantidad == 1)
+				validado = true;
+
+		}
+
+		return validado;
 	}
 
 	protected int contar(String login, String password) {
@@ -79,17 +110,43 @@ public class Modelo extends Database {
 		return insertado;
 	}
 
+//	public boolean actualizarUsuario(Usuario u) {
+//		boolean actualizado = false;
+//
+//		String sql = "UPDATE Usuario SET login='" + u.getLogin() + "' ,mail='" + u.getMail() + "' ,role='" + u.getRole()
+//				+ "' ,password='" + u.getPassword() + "' WHERE id=" + u.getId();
+//		
+//		System.out.println(sql);
+//
+//		try (Connection con = conectar(); Statement st = con.createStatement()) {
+//
+//			st.execute(sql);
+//			actualizado = true;
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return actualizado;
+//	}
+
 	public boolean actualizarUsuario(Usuario u) {
 		boolean actualizado = false;
 
-		String sql = "UPDATE Usuario SET login='" + u.getLogin() + "' ,mail='" + u.getMail() + "' ,role='" + u.getRole()
-				+ "' ,password='" + u.getPassword() + "' WHERE id=" + u.getId();
-		
-		System.out.println(sql);
+		String sql = "UPDATE Usuario SET login=? ,mail=? ,role=? ,password=? WHERE id=?";
 
-		try (Connection con = conectar(); Statement st = con.createStatement()) {
+		try (Connection con = conectar(); PreparedStatement pst = con.prepareStatement(sql)) {
 
-			st.execute(sql);
+			int pos = 0, cantidad;
+
+			pst.setString(++pos, u.getLogin());
+			pst.setString(++pos, u.getMail());
+			pst.setString(++pos, u.getRole());
+			pst.setString(++pos, u.getPassword());
+			pst.setInt(++pos, u.getId());
+
+			pst.execute();
+
 			actualizado = true;
 
 		} catch (SQLException e) {
@@ -98,17 +155,21 @@ public class Modelo extends Database {
 
 		return actualizado;
 	}
-
+	
 	public boolean eliminarUsuario(int id) {
 
 		boolean eliminado = false;
 
-		String sql = "DELETE FROM Usuario WHERE id=" + id;
+		String sql = "DELETE FROM Usuario WHERE id=?";
 
-		try (Connection con = conectar(); Statement st = con.createStatement();) {
+		try (Connection con = conectar(); PreparedStatement st = con.prepareStatement(sql);) {
+			
+			st.setInt(1, id);
 
-			st.execute(sql);
+			int cantidad = st.executeUpdate();
 
+			System.out.println(cantidad);
+			
 			eliminado = true;
 
 		} catch (SQLException e) {
@@ -117,12 +178,32 @@ public class Modelo extends Database {
 
 		return eliminado;
 	}
-	
-	public ArrayList<Usuario> obtenerUsuarios(String where){
-		return obtenerUsuarios(where,"");
+
+//	public boolean eliminarUsuario(int id) {
+//
+//		boolean eliminado = false;
+//
+//		String sql = "DELETE FROM Usuario WHERE id=" + id;
+//
+//		try (Connection con = conectar(); Statement st = con.createStatement();) {
+//
+//			st.execute(sql);
+//
+//			eliminado = true;
+//
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+//
+//		return eliminado;
+//	}
+
+	public ArrayList<Usuario> obtenerUsuarios(String where) {
+		return obtenerUsuarios(where, "");
 	}
-	public ArrayList<Usuario> obtenerUsuarios(){
-		return obtenerUsuarios("","");
+
+	public ArrayList<Usuario> obtenerUsuarios() {
+		return obtenerUsuarios("", "");
 	}
 
 	public ArrayList<Usuario> obtenerUsuarios(String where, String order) {
@@ -137,17 +218,17 @@ public class Modelo extends Database {
 		Usuario usuario;
 
 		String sql = "SELECT * FROM Usuario";
-		
-		if(!where.equals("")) {
-			sql+=" WHERE " + where;
+
+		if (!where.equals("")) {
+			sql += " WHERE " + where;
 		}
-		
-		if(!order.equals("")) {
-			sql+=" ORDER BY " + order;
+
+		if (!order.equals("")) {
+			sql += " ORDER BY " + order;
 		}
 
 		System.out.println(sql);
-		
+
 		try (Connection con = conectar(); Statement st = con.createStatement(); ResultSet rs = st.executeQuery(sql);) {
 
 			while (rs.next()) {

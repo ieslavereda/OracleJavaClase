@@ -5,6 +5,7 @@ package es.ieslavereda.tienda.controlador;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -35,7 +36,6 @@ public class Controlador implements ActionListener {
 	JIFLogin jifLogin;
 	JIFUsuarios jifUsers;
 	JIFFormularioUsuarios jifFormularioUsuarios;
-	
 
 	public Controlador(JFramePrincipal view, Modelo modelo) {
 		this.view = view;
@@ -53,7 +53,6 @@ public class Controlador implements ActionListener {
 		view.btnLogin.setActionCommand("Abrir formulario login");
 		view.btnSalir.setActionCommand("Cerrar sesion");
 		view.btnReport.setActionCommand("Report");
-		
 
 		// Ponemos a escuchar las accionew del usuario
 		view.btnListUsers.addActionListener(this);
@@ -104,72 +103,69 @@ public class Controlador implements ActionListener {
 		} else if (comando.equals("Add new user")) {
 			addNewUser();
 		}
-		
+
 	}
 
-
-
 	private void updateUser() {
-		int option = JOptionPane.showConfirmDialog(jifUsers, "Esta usted seguro que desea modificar el usuario?", "Question",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+		int option = JOptionPane.showConfirmDialog(jifUsers, "Esta usted seguro que desea modificar el usuario?",
+				"Question", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
 		if (option == JOptionPane.YES_OPTION) {
-			
+
 			Usuario u = jifFormularioUsuarios.getUsuario();
-			
+
 			u.setLogin(jifFormularioUsuarios.getTextFieldLogin().getText());
 			u.setMail(jifFormularioUsuarios.getTextFieldMail().getText());
 			u.setPassword(String.valueOf(jifFormularioUsuarios.getPasswordField().getPassword()));
 			u.setRole(jifFormularioUsuarios.getComboBoxRole().getSelectedItem().toString());
-			
-			if(modelo.actualizarUsuario(u)) {
-				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario actualizado correctamente.", "Info", JOptionPane.INFORMATION_MESSAGE);
+
+			if (modelo.actualizarUsuario(u)) {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario actualizado correctamente.", "Info",
+						JOptionPane.INFORMATION_MESSAGE);
 				u = null;
 				jifFormularioUsuarios.dispose();
-			}else {
-				JOptionPane.showMessageDialog(jifFormularioUsuarios, "El usuario no se ha podido actualizar.", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "El usuario no se ha podido actualizar.", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
-			
+
 		}
-		
-		
+
 	}
 
 	private void openEditUserJIFrame() {
-		
+
 		int fila = jifUsers.getTableUsers().getSelectedRow();
 
 		if (fila == -1) {
 			JOptionPane.showMessageDialog(jifUsers, "Debe seleccionar previamente el usuario a editar", "Error",
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			
+
 			int id = Integer.parseInt(jifUsers.getTableUsers().getValueAt(fila, 0).toString());
 			String login = jifUsers.getTableUsers().getValueAt(fila, 1).toString();
 			String role = jifUsers.getTableUsers().getValueAt(fila, 2).toString();
 			String mail = jifUsers.getTableUsers().getValueAt(fila, 3).toString();
-			
-			
-			Usuario u = new Usuario(id,login,mail,role,"");
-			
+
+			Usuario u = new Usuario(id, login, mail, role, "");
+
 			jifFormularioUsuarios = new JIFFormularioUsuarios();
-			
+
 			jifFormularioUsuarios.getTextFieldLogin().setText(login);
 			jifFormularioUsuarios.getTextFieldMail().setText(mail);
 			jifFormularioUsuarios.getComboBoxRole().setSelectedItem(role);
-			
+
 			view.desktopPane.add(jifFormularioUsuarios);
 			jifFormularioUsuarios.setVisible(true);
-			
+
 			jifFormularioUsuarios.getBtnAction().setText("Update");
 			jifFormularioUsuarios.getBtnAction().addActionListener(this);
 			jifFormularioUsuarios.getBtnAction().setActionCommand("Update user");
-			
-			
+
 			jifFormularioUsuarios.setUsuario(u);
-			
+
 		}
-		
+
 	}
 
 	private void addNewUser() {
@@ -185,11 +181,13 @@ public class Controlador implements ActionListener {
 			String password = String.valueOf(jifFormularioUsuarios.getPasswordField().getPassword());
 
 			if (modelo.insertarUsuario(new Usuario(login, mail, role, password))) {
-				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario insertado", "Info", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario insertado", "Info",
+						JOptionPane.INFORMATION_MESSAGE);
 				actualizarTablaUsuarios();
 				jifFormularioUsuarios.dispose();
-			}else {
-				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario no insertado", "Error", JOptionPane.ERROR_MESSAGE);
+			} else {
+				JOptionPane.showMessageDialog(jifFormularioUsuarios, "Usuario no insertado", "Error",
+						JOptionPane.ERROR_MESSAGE);
 			}
 
 		}
@@ -274,22 +272,24 @@ public class Controlador implements ActionListener {
 		}
 
 	}
+
 	private void actualizarTablaUsuarios() {
-		
-		String where="";
+
+		String where = "";
 		String order;
-		
-		if(!jifUsers.getTextFieldWhere().getText().isBlank()) {
-			where+=jifUsers.getComboBoxWhere().getSelectedItem().toString() + " LIKE '%" + jifUsers.getTextFieldWhere().getText() + "%' ";
+
+		if (!jifUsers.getTextFieldWhere().getText().isBlank()) {
+			where += jifUsers.getComboBoxWhere().getSelectedItem().toString() + " LIKE '%"
+					+ jifUsers.getTextFieldWhere().getText() + "%' ";
 		}
-		
+
 		order = jifUsers.getComboBoxSort().getSelectedItem().toString();
-		order += (jifUsers.getComboBoxOrder().getSelectedItem().toString().equals("Ascendente"))?" ASC":" DESC";
-		
+		order += (jifUsers.getComboBoxOrder().getSelectedItem().toString().equals("Ascendente")) ? " ASC" : " DESC";
+
 		ArrayList<Usuario> usuarios = modelo.obtenerUsuarios(where, order);
-		
+
 		actualizarTablaUsuarios(usuarios);
-		
+
 	}
 
 	private void actualizarTablaUsuarios(ArrayList<Usuario> usuarios) {
@@ -353,16 +353,21 @@ public class Controlador implements ActionListener {
 	private void loguearUsuario() {
 		String login = jifLogin.txtFieldLogin.getText();
 		String password = String.valueOf(jifLogin.passwordField.getPassword());
-
-		if (modelo.autentificar(login, password)) {
-			view.btnUsers.setEnabled(true);
-			view.btnListUsers.setEnabled(true);
-			view.btnLogin.setEnabled(false);
-			view.btnSalir.setEnabled(true);
-			view.btnReport.setEnabled(true);
-			jifLogin.dispose();
+		try {
+			if (modelo.validar(login, password)) {
+				view.btnUsers.setEnabled(true);
+				view.btnListUsers.setEnabled(true);
+				view.btnLogin.setEnabled(false);
+				view.btnSalir.setEnabled(true);
+				view.btnReport.setEnabled(true);
+				jifLogin.dispose();
+			} else {
+				JOptionPane.showMessageDialog(jifLogin, "El login y/o password son incorrectos", "Error",
+						JOptionPane.ERROR_MESSAGE);
+			}
+		} catch (SQLException sql) {
+			JOptionPane.showMessageDialog(jifLogin, "Se ha producido un error en la BBDD", "Error", JOptionPane.ERROR_MESSAGE);
 		}
-
 	}
 
 	private void abrirFormularioLogin() {
